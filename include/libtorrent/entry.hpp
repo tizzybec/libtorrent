@@ -56,6 +56,8 @@ see LICENSE file.
 #include "libtorrent/aux_/noexcept_movable.hpp"
 #include "libtorrent/aux_/strview_less.hpp"
 
+#include <boost/container/map.hpp>
+
 namespace libtorrent {
 
 #if TORRENT_ABI_VERSION == 1
@@ -67,7 +69,7 @@ namespace libtorrent {
 
 	namespace entry_types {
 
-		using dictionary_type = lt::aux::noexcept_movable<std::map<std::string, entry, aux::strview_less>>;
+		using dictionary_type = boost::container::map<std::string, entry, aux::strview_less>;
 		using string_type = std::string;
 		using list_type = std::vector<entry>;
 		using integer_type = std::int64_t;
