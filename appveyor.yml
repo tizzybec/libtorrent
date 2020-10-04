@@ -5,7 +5,7 @@ branches:
     - RC_2_0
     - RC_1_2
     - RC_1_1
-image: Visual Studio 2019 Preview
+image: Visual Studio 2019
 clone_depth: 1
 environment:
   matrix:
