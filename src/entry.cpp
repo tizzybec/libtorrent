@@ -154,9 +154,21 @@ namespace {
 
 	entry& entry::operator=(dictionary_type d) & { emplace<dictionary_type>(std::move(d)); return *this; }
 	entry& entry::operator=(span<char const> str) & { emplace<string_type>(str.data(), str.size()); return *this; }
+	entry& entry::operator=(string_view str) & { emplace<string_type>(str.data(), str.size()); return *this; }
+	entry& entry::operator=(string_type str) & { emplace<string_type>(std::move(str)); return *this; }
 	entry& entry::operator=(list_type i) & { emplace<list_type>(std::move(i)); return *this; }
 	entry& entry::operator=(integer_type i) & { emplace<integer_type>(i); return *this; }
 	entry& entry::operator=(preformatted_type d) & { emplace<preformatted_type>(std::move(d)); return *this; }
+
+	template <typename U, typename Cond>
+	entry& entry::operator=(U v) &
+	{
+		emplace<string_type>(v);
+		return *this;
+	}
+
+	// explicit template instantiation
+	template entry& entry::operator=(char const*) &;
 
 	template <typename T>
 	T& entry::get()
@@ -210,6 +222,17 @@ namespace {
 	entry::entry(dictionary_type v) : variant_type(std::move(v)) {}
 	entry::entry(list_type v) : variant_type(std::move(v)) {}
 	entry::entry(span<char const> v) : variant_type(std::in_place_type<string_type>, v.data(), v.size()) {}
+	entry::entry(string_view v) : variant_type(std::in_place_type<string_type>, v.data(), v.size()) {}
+	entry::entry(string_type s) : variant_type(std::move(s)) {}
+
+	template <typename U, typename Cond>
+	entry::entry(U v) // NOLINT
+			: variant_type(std::in_place_type<string_type>, std::move(v))
+	{}
+
+	// explicit template instantiation
+	template entry::entry(char const*);
+
 	entry::entry(integer_type v) : variant_type(std::move(v)) {}
 	entry::entry(preformatted_type v) : variant_type(std::move(v)) {}
 

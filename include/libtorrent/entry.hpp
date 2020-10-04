@@ -124,18 +124,18 @@ namespace libtorrent {
 		// newly constructed entry
 		entry(dictionary_type); // NOLINT
 		entry(span<char const>); // NOLINT
+		entry(string_view); // NOLINT
+		entry(string_type); // NOLINT
 		entry(list_type); // NOLINT
 		entry(integer_type); // NOLINT
 		entry(preformatted_type); // NOLINT
 
 		// hidden
+		// this is here to disambiguate between std::string and string_view. It
+		// needs to be a template to prevent implicit conversions from literal 0
 		template <typename U, typename Cond = typename std::enable_if<
-			std::is_same<U, entry::string_type>::value
-			|| std::is_same<U, string_view>::value
-			|| std::is_same<U, char const*>::value>::type>
-		entry(U v) // NOLINT
-			: variant_type(std::in_place_type<string_type>, std::move(v))
-		{}
+			std::is_same<U, char const*>::value>::type>
+		entry(U v);
 
 		// construct an empty entry of the specified type.
 		// see data_type enum.
@@ -159,20 +159,18 @@ namespace libtorrent {
 		entry& operator=(entry&&) & ;
 		entry& operator=(dictionary_type) &;
 		entry& operator=(span<char const>) &;
+		entry& operator=(string_view) &;
+		entry& operator=(string_type) &;
 		entry& operator=(list_type) &;
 		entry& operator=(integer_type) &;
 		entry& operator=(preformatted_type) &;
 
 		// hidden
+		// this is here to disambiguate between std::string and string_view. It
+		// needs to be a template to prevent implicit conversions from literal 0
 		template <typename U, typename Cond = typename std::enable_if<
-			std::is_same<U, entry::string_type>::value
-			|| std::is_same<U, string_view>::value
-			|| std::is_same<U, char const*>::value>::type>
-		entry& operator=(U v) &
-		{
-			emplace<string_type>(std::move(v));
-			return *this;
-		}
+			std::is_same<U, char const*>::value>::type>
+		entry& operator=(U v) &;
 
 		// The ``integer()``, ``string()``, ``list()`` and ``dict()`` functions
 		// are accessors that return the respective type. If the ``entry`` object
