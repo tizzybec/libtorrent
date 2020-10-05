@@ -168,7 +168,8 @@ namespace {
 	}
 
 	// explicit template instantiation
-	template entry& entry::operator=(char const*) &;
+	template TORRENT_EXPORT
+	entry& entry::operator=(char const*) &;
 
 	template <typename T>
 	T& entry::get()
@@ -231,7 +232,8 @@ namespace {
 	{}
 
 	// explicit template instantiation
-	template entry::entry(char const*);
+	template TORRENT_EXPORT
+	entry::entry(char const*);
 
 	entry::entry(integer_type v) : variant_type(std::move(v)) {}
 	entry::entry(preformatted_type v) : variant_type(std::move(v)) {}
